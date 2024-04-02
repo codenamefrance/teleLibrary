@@ -2,7 +2,6 @@ import requests
 
 API_URL = 'https://www.googleapis.com/books/v1/volumes?q=isbn:'
 
-isbn = '9788806227623'
 
 class Book:
     def __init__ (self, bookTitle, bookAuthors, bookYear):
@@ -26,5 +25,3 @@ def getISBNdata(isbn) -> Book:
     bookData = Book(title, author, year)
 
     return bookData
-
-getISBNdata(isbn)

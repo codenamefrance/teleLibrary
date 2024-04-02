@@ -3,8 +3,15 @@ import telebot
 from sql import *
 from isbnscanner import *
 from isbnsearch import*
+import json
 
-TOKEN = 'TOKEN'
+with open("config.json", "r") as json_data_file:
+    data = json.load(json_data_file)
+
+TOKEN = data['telegram-bot']['token']
+
+
+##TODO: add a config file for token and mysql informations
 
 db = dbConnect()
 bot = telebot.TeleBot(TOKEN)
