@@ -1,0 +1,12 @@
+{
+    "telegram-bot": {
+        "token": "TOKEN"
+    },
+    "mysql":{
+        "host":"host-here",
+        "user":"user-here",
+        "password":"password-here",
+        "database":"db-name-here",
+        "auth_plugin":"auth-here"
+    }
+}
