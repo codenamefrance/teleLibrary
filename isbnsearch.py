@@ -2,7 +2,6 @@ import requests
 
 API_URL = 'https://www.googleapis.com/books/v1/volumes?q=isbn:'
 
-
 class Book:
     def __init__ (self, bookTitle, bookAuthors, bookYear):
         self.bookTitle = bookTitle
@@ -11,16 +10,17 @@ class Book:
 
 def getISBNdata(isbn) -> Book:
 
-    x = requests.get(API_URL+isbn)
-    if(x.status_code!=200):
+    api_data = requests.get(API_URL+isbn)
+    if(api_data.status_code!=200):
         return None
 
-    x = x.json()
-
-
-    author = x['items'][0]['volumeInfo']['authors']
-    title = x['items'][0]['volumeInfo']['title']
-    year = x['items'][0]['volumeInfo']['publishedDate']
+    api_data = api_data.json()
+    try:
+        author = api_data['items'][0]['volumeInfo']['authors']
+        title = api_data['items'][0]['volumeInfo']['title']
+        year = api_data['items'][0]['volumeInfo']['publishedDate']
+    except KeyError:
+        return None
 
     bookData = Book(title, author, year)
 

@@ -11,10 +11,9 @@ with open("config.json", "r") as json_data_file:
 TOKEN = data['telegram-bot']['token']
 
 
-##TODO: add a config file for token and mysql informations
-
 db = dbConnect()
 bot = telebot.TeleBot(TOKEN)
+print(db.is_connected())
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -34,29 +33,31 @@ def download_image(message):
     if(isbn == None):
         bot.send_message(message.from_user.id, text='Immagine non valida.')
         return
-    #bookInfo = getISBNdata(isbn)
+    
+    book_data = getISBNdata(isbn)
 
-    dbInsertBook(db, message.from_user.id, isbn)
-    bot.send_message(message.from_user.id, text='Libro inserito correttamente')    
+    if book_data is None:
+        bot.send_message(message.from_user.id, text=f'Non riesco a trovare questo libro - ISBN: {isbn}')
+        return
+    if dbInsertBook(db, message.from_user.id, isbn):
+        bot.send_message(message.from_user.id, text=f'Ho correttamente inserito "{book_data.bookTitle}" all\'interno della tua libreria.')
+        return
+    bot.send_message(message.from_user.id, text='Il libro è già presente nella tua libreria.')
+
 
 @bot.message_handler(commands=['books'])
 def getBooks(message):
     userID = message.from_user.id
-    bookIsbn = dbGetUserBooks(db, userID)
+    books_data = dbGetUserBooks(db, userID)
     books = list()
 
-    for isbn in bookIsbn:
+    for isbn in books_data:
         books.append(getISBNdata(isbn))
 
     text = ''
-
     for book in books:
         text += book.bookTitle + '\n'
     bot.send_message(userID, text=text)
-
-
-
-
 
 while True:
     bot.infinity_polling()
